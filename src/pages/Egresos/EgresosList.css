@@ -1,0 +1,101 @@
+/* ============================================== */
+/* Estilos para EgresosList.js */
+/* ============================================== */
+
+.egresos-list-container {
+    padding: 20px;
+    max-width: 1200px; /* Asegura que el contenedor tenga espacio para una tabla ancha */
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    text-align: center;
+    color: #1a237e;
+    margin-bottom: 1.5rem;
+}
+
+.total-summary {
+    text-align: right;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #dc3545; /* Rojo para el total de gastos */
+    margin-bottom: 1rem;
+}
+
+/* Estilos de la tabla */
+.egresos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    table-layout: fixed; /* Ayuda a que los anchos definidos funcionen mejor */
+}
+
+.egresos-table thead th {
+    background-color: #f0f4f8;
+    color: #4a5568;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid #e2e8f0;
+    font-weight: 600;
+}
+
+.egresos-table tbody td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+    /* Estilos base para todas las celdas */
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.egresos-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+/* ---------------------------------------------------- */
+/* IMPORTANTE: Estilo para la columna de DESCRIPCIÓN */
+/* ---------------------------------------------------- */
+.egresos-table tbody tr td:nth-child(3) { 
+    /* Esta es la tercera columna (Descripción / Artículo) */
+    
+    /* AUMENTO EL ANCHO para que el texto sea visible */
+    max-width: 600px; 
+    
+    /* ANULAN las propiedades de nowrap y ellipsis para forzar el ajuste de línea */
+    word-wrap: break-word; 
+    word-break: break-word; 
+    white-space: normal;
+}
+
+/* Estilo para las celdas de total (para que no se rompan y se alineen a la derecha) */
+.total-cell {
+    font-weight: bold;
+    color: #dc3545;
+    text-align: right;
+    white-space: nowrap; 
+    width: 120px; /* Ancho fijo para columnas de números */
+}
+
+/* Estilo para las celdas pequeñas (Fecha, Tipo, Pagado Por) */
+.egresos-table tbody tr td:nth-child(1), /* Fecha */
+.egresos-table tbody tr td:nth-child(2), /* Tipo */
+.egresos-table tbody tr td:nth-child(4), /* Factura N° */
+.egresos-table tbody tr td:nth-child(6) { /* Pagado Por */
+    width: 120px;
+}
+
+/* Mensajes de estado */
+.loading-message, .error-message, .empty-list-message {
+    text-align: center;
+    padding: 20px;
+    color: #718096;
+}
+
+.error-message {
+    color: #d32f2f;
+    font-weight: bold;
+}

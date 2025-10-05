@@ -3,13 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase';
 
-import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 import Inventario from './pages/Inventario/Inventario';
 import PuntoVenta from './pages/PuntoVenta/PuntoVenta';
-import Home from './pages/Home/Home.js';
-import Clientes from './pages/Clientes/Clientes.js';
-import Egresos from './pages/Egresos/Egresos';
-import ReporteTotal from './pages/Reportes/ReporteTotal.js'; // Ruta corregida
 
 import './App.css';
 
@@ -18,12 +14,9 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   const navLinks = [
-    { name: 'Inicio', url: '/' },
     { name: 'Inventario', url: '/inventario' },
     { name: 'Punto de Venta', url: '/punto-venta' },
-    { name: 'Clientes', url: '/clientes' },
-    { name: 'Egresos', url: '/egresos' },
-    { name: 'Reporte', url: '/reporte' },
+    { name: 'Kits', url: '/kits' },
   ];
 
   useEffect(() => {
@@ -51,16 +44,13 @@ function App() {
 
   return (
     <Router>
-      <div className="app-container">
-        <Header navLinks={navLinks} />
-        <main className="content-area-full">
+      <div className="app-container-sidebar-only">
+        <Sidebar navLinks={navLinks} />
+        <main className="content-area">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Inventario userId={user.uid} />} />
             <Route path="/inventario" element={<Inventario userId={user.uid} />} />
             <Route path="/punto-venta" element={<PuntoVenta userId={user.uid} />} />
-            <Route path="/clientes" element={<Clientes userId={user.uid} />} />
-            <Route path="/egresos" element={<Egresos userId={user.uid} />} />
-            <Route path="/reporte" element={<ReporteTotal userId={user.uid} />} />
           </Routes>
         </main>
       </div>

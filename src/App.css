@@ -1,38 +1,47 @@
-.App {
-  text-align: center;
+/* App.css */
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   min-height: 100vh;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4A3E30;
+}
+
+.app-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  min-height: 100vh;
 }
 
-.App-link {
-  color: #61dafb;
+.main-content-wrapper {
+  display: flex;
+  flex-grow: 1; /* Permite que este contenedor se expanda para llenar el espacio */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.content-area {
+  flex-grow: 1; /* Permite que el área de contenido principal se expanda */
+  padding: 2rem;
+  background-color: #f8f9fa;
+  overflow-y: auto; /* Permite el scroll si el contenido es muy largo */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .main-content-wrapper {
+    flex-direction: column; /* Cambia a una dirección de columna en pantallas pequeñas */
   }
-  to {
-    transform: rotate(360deg);
+
+  .content-area {
+    padding: 1rem; /* Reduce el padding en móviles */
   }
 }

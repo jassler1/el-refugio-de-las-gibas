@@ -1,0 +1,228 @@
+/* Estilos generales para el contenedor del reporte */
+.reporte-total-container {
+    padding: 2.5rem;
+    max-width: 900px;
+    margin: 2rem auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+h3 {
+    text-align: center;
+    color: #1a237e;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Estilos para el resumen de ingresos, egresos y saldo */
+.reporte-resumen {
+    display: flex;
+    justify-content: space-around;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.resumen-card {
+    flex: 1;
+    min-width: 200px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.resumen-card:hover {
+    transform: translateY(-5px);
+}
+
+.resumen-card h4 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.valor {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin: 0.5rem 0 0;
+}
+
+.ingresos-valor {
+    color: #28a745;
+}
+
+.egresos-valor {
+    color: #dc3545;
+}
+
+.saldo-valor {
+    font-size: 2.5rem;
+}
+
+.saldo-positivo {
+    color: #28a745;
+}
+
+.saldo-negativo {
+    color: #dc3545;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background-color: #e2e8f0;
+    margin: 2.5rem 0;
+}
+
+/* Estilos para la lista de ventas (ingresos) */
+.lista-ventas-section {
+    margin-top: 2rem;
+}
+
+.lista-ventas-section h3 {
+    text-align: left;
+    font-size: 1.5rem;
+    color: #1a237e;
+    margin-bottom: 1.5rem;
+}
+
+.no-data-message {
+    text-align: center;
+    color: #718096;
+    padding: 2rem;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+}
+
+.lista-ventas {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.venta-item {
+    background-color: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.venta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #cbd5e0;
+    padding-bottom: 1rem;
+}
+
+.venta-info {
+    font-size: 0.95rem;
+    color: #4a5568;
+}
+
+.venta-total {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #1a237e;
+}
+
+.articulos-vendidos {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.articulo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #4a5568;
+    line-height: 1.6;
+    padding: 0.25rem 0;
+}
+
+.articulo-precios {
+    font-size: 0.9em;
+    color: #6c757d;
+    text-align: right;
+    margin-left: 1rem;
+}
+
+/* Estilos para la lista de egresos */
+.lista-egresos-section {
+    margin-top: 2rem;
+}
+
+.lista-egresos-section h3 {
+    text-align: left;
+    font-size: 1.5rem;
+    color: #1a237e;
+    margin-bottom: 1.5rem;
+}
+
+.lista-egresos {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.egreso-item {
+    background-color: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.egreso-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #cbd5e0;
+    padding-bottom: 1rem;
+}
+
+.egreso-info {
+    font-size: 0.95rem;
+    color: #4a5568;
+}
+
+.egreso-total {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #dc3545;
+}
+
+.egreso-descripcion {
+    margin: 0;
+    font-style: italic;
+    color: #555;
+    padding-top: 0.5rem;
+}
+
+/* Mensajes de estado */
+.loading-message, .error-message {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.error-message {
+    color: #d32f2f;
+    font-weight: bold;
+}

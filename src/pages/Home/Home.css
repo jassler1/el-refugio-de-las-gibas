@@ -1,0 +1,90 @@
+/* Home.css */
+
+.home-container {
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.welcome-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  background-color: #f0f4f8;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.welcome-section h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #4A3E30;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-section p {
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+.alerts-section {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.alerts-section h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #dc3545;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+.alerts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.alert-item {
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.alert-item.low-stock {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.alert-item.low-stock::before {
+  content: '⚠️';
+  margin-right: 1rem;
+  font-size: 1.5rem;
+}
+
+.alert-item strong {
+  font-weight: 700;
+}
+
+.no-alerts {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #6c757d;
+  background-color: #e9f5e9;
+  border: 1px solid #d4edda;
+  border-radius: 8px;
+}
+
+.no-alerts span {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}

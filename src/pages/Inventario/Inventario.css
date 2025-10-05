@@ -1,0 +1,307 @@
+/* ==================================== */
+/* 1. Contenedor Principal y Tipografía */
+/* ==================================== */
+.inventario-container {
+    padding: 20px;
+    max-width: 1300px;
+    margin: 20px auto;
+    font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    color: #3c4043; /* Texto oscuro y legible */
+    background-color: #f7f9fb; /* Fondo muy suave */
+    border-radius: 12px;
+}
+
+.inventario-container h1 {
+    color: #1a73e8; /* Azul primario de Google-like */
+    margin-bottom: 25px;
+    font-size: 28px;
+    font-weight: 500;
+    border-bottom: 3px solid #e8f0fe;
+    padding-bottom: 10px;
+}
+
+.inventario-container h2 {
+    color: #3c4043;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: 500;
+}
+
+/* ==================================== */
+/* 2. Controles Superiores y Botones */
+/* ==================================== */
+.top-controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap; 
+    gap: 15px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filter-container {
+    flex-grow: 1;
+    min-width: 200px;
+}
+
+.filter-container input[type="text"] {
+    padding: 10px 15px;
+    border: 1px solid #dadce0;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 350px;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.filter-container input[type="text"]:focus {
+    border-color: #4285f4;
+    box-shadow: 0 0 0 1px #4285f4;
+    outline: none;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.btn-primary, .btn-secondary, .action-button, .back-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.btn-primary {
+    background-color: #1a73e8; 
+    color: white;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+    background-color: #1764cf;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+    background-color: #ffffff; 
+    color: #1a73e8;
+    border: 1px solid #dadce0;
+}
+
+.btn-secondary:hover {
+    background-color: #f7f9fb;
+    border-color: #1a73e8;
+}
+
+/* ==================================== */
+/* 3. Tablas (Insumos y Kits) */
+/* ==================================== */
+.inventario-table, .kits-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; 
+}
+
+.inventario-table th, .kits-table th, 
+.inventario-table td, .kits-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+}
+
+.inventario-table th, .kits-table th {
+    background-color: #e8f0fe; 
+    color: #1a73e8;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.inventario-table tbody tr:hover, .kits-table tbody tr:hover {
+    background-color: #fafafa;
+}
+
+/* Columna de Cantidad y Stock Mínimo */
+.inventario-table td:nth-child(4), .inventario-table td:nth-child(5) {
+    font-weight: 600;
+    color: #4285f4; 
+}
+
+/* --- Alerta de Bajo Stock --- */
+.low-stock {
+    background-color: #fef7ec !important; /* Amarillo muy suave */
+    color: #fbbc04; /* Naranja/Amarillo de advertencia */
+    font-weight: 600;
+}
+
+.low-stock td {
+    color: #e0ac00; /* Asegura que el texto sea visible */
+}
+
+/* --- Estilos específicos para Kits --- */
+.kits-table td:nth-child(5) { /* Columna Límite Prod. */
+    font-weight: 700;
+    color: #34a853; /* Verde para la producción máxima */
+    background-color: #e6f4ea;
+}
+
+.kits-table ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+}
+
+.kits-table li {
+    color: #70757a;
+    line-height: 1.4;
+}
+
+/* ==================================== */
+/* 4. Botones de Acción y Errores */
+/* ==================================== */
+
+.action-button {
+    margin-right: 5px;
+    font-size: 11px;
+    padding: 6px 10px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.edit-button {
+    background-color: #fbbc04; 
+    color: #3c4043;
+}
+
+.edit-button:hover {
+    background-color: #e0ac00;
+}
+
+.delete-button {
+    background-color: #d93025; 
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #a50e05;
+}
+
+.error-message {
+    color: #d93025; 
+    background-color: #fce8e6;
+    border: 1px solid #d93025;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+/* ==================================== */
+/* 5. Vistas Modales y de Página */
+/* ==================================== */
+
+.form-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* El estilo para el formulario en sí debe estar en InventarioForm.css, pero se ajusta el contenedor aquí */
+.form-modal-overlay > * {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.form-page-container {
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.back-button {
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: #70757a;
+    color: white;
+}
+
+.back-button:hover {
+    background-color: #5f6368;
+}
+
+/* ==================================== */
+/* 6. Responsividad (Móviles) */
+/* ==================================== */
+
+@media (max-width: 1000px) {
+    .inventario-container {
+        padding: 10px;
+        margin: 10px auto;
+    }
+    
+    .top-controls-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filter-container {
+        margin-bottom: 10px;
+        width: 100%;
+        max-width: none;
+    }
+
+    .button-group {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .btn-primary, .btn-secondary {
+        flex: 1 1 auto; /* Permite que los botones se repartan el espacio */
+    }
+
+    /* Tablas con desplazamiento horizontal forzado para móviles */
+    .inventario-table, .kits-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .inventario-table thead, .kits-table thead {
+        display: table-header-group;
+    }
+}

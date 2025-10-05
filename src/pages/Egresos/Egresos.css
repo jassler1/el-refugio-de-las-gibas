@@ -1,0 +1,282 @@
+/* ============================================== */
+/* 1. Estilos del Contenedor Principal (Egresos.js) */
+/* ============================================== */
+.egresos-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.form-section {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+h3 {
+    color: #1a237e; /* Azul oscuro */
+    margin-top: 0;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+h4 {
+    color: #3f51b5; /* Azul medio */
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #757575;
+    margin-bottom: 20px;
+    font-style: italic;
+    font-size: 0.95em;
+}
+
+/* ============================================== */
+/* 2. Estilos de Formularios y Filas */
+/* ============================================== */
+.form-group {
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #424242;
+}
+
+.form-group-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group-row .form-group {
+    flex: 1;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bdbdbd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Incluye padding y border en el width */
+    font-size: 1em;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.required {
+    color: #f44336; /* Rojo para campos obligatorios */
+}
+
+/* ============================================== */
+/* 3. Estilos de Mensajes (Alertas) */
+/* ============================================== */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.alert.success {
+    background-color: #e8f5e9;
+    color: #388e3c;
+    border: 1px solid #388e3c;
+}
+
+.alert.error {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+}
+
+/* ============================================== */
+/* 4. Estilos de Botones */
+/* ============================================== */
+.btn-save {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #4caf50; /* Verde principal */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-save:hover:not(:disabled) {
+    background-color: #388e3c;
+}
+
+.btn-save:disabled {
+    background-color: #a5d6a7;
+    cursor: not-allowed;
+}
+
+/* ============================================== */
+/* 5. Estilos para Añadir Artículo (producto-section) */
+/* ============================================== */
+.form-group-add-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.form-group-add-item input {
+    /* El primer input de descripción toma la mayor parte del espacio */
+    flex-grow: 1; 
+}
+
+.btn-add-item {
+    background-color: #2196f3; /* Azul */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2em;
+    line-height: 1;
+    transition: background-color 0.3s ease;
+}
+
+.btn-add-item:hover {
+    background-color: #1976d2;
+}
+
+/* Lista de Artículos */
+.item-list {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #fafafa;
+}
+
+.item-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 0.95em;
+    color: #424242;
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+.btn-remove-item {
+    background-color: #f44336; /* Rojo */
+    color: white;
+    border: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-remove-item:hover {
+    background-color: #d32f2f;
+}
+
+.total-factura {
+    margin-top: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #1a237e;
+    text-align: right;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* ============================================== */
+/* 6. Estilos de la Lista de Egresos (EgresosList.js) */
+/* ============================================== */
+.egresos-list-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.total-summary {
+    text-align: right;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #dc3545; /* Rojo para el total de gastos */
+    margin-bottom: 1rem;
+}
+
+.egresos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.egresos-table thead th {
+    background-color: #f0f4f8;
+    color: #4a5568;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid #e2e8f0;
+    font-weight: 600;
+}
+
+.egresos-table tbody td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+}
+
+.egresos-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+/* IMPORTANTE: Estilo para la celda de la descripción para evitar el recorte */
+.egresos-table tbody tr td:nth-child(3) { 
+    max-width: 300px;
+    word-wrap: break-word; 
+    word-break: break-word; 
+    white-space: normal;
+}
+
+.total-cell {
+    font-weight: bold;
+    color: #dc3545;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.empty-list-message {
+    text-align: center;
+    padding: 20px;
+    color: #718096;
+    border: 1px dashed #ccc;
+    margin-top: 20px;
+}

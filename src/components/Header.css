@@ -1,0 +1,105 @@
+/* Header.css */
+
+/* Paleta de colores rústica mejorada: */
+:root {
+  --rust-brown: #4A3E30; /* Marrón oscuro para texto y detalles */
+  --wood-grain: #7B6856; /* Marrón medio para el fondo de madera */
+  --light-tan: #CDB891;  /* Beige claro para acentos y resaltado */
+  --sienna: #A0522D;     /* Terracota para los enlaces y bordes */
+}
+
+.rustic-header {
+  background-color: var(--wood-grain);
+  color: var(--light-tan);
+  padding: 1.5rem 2rem;
+  /* Sombra más pronunciada para dar volumen */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  /* Borde inferior para un acabado más sólido */
+  border-bottom: 5px solid var(--rust-brown);
+  font-family: 'Georgia', serif;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 2.5px;
+  /* Simula el efecto de grabado o tallado en la madera */
+  text-shadow: 
+    -1px -1px 0 var(--sienna),  
+    1px -1px 0 var(--sienna),
+    -1px 1px 0 var(--sienna),
+    1px 1px 0 var(--sienna),
+    2px 2px 4px rgba(0, 0, 0, 0.7);
+  color: #fff;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+}
+
+.nav-item {
+  margin: 0;
+}
+
+.nav-link {
+  color: var(--light-tan);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  text-transform: uppercase;
+}
+
+.nav-link:hover {
+  color: var(--sienna); /* Cambio de color al pasar el cursor */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--sienna);
+  transition: width 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }>
+  .nav-list {
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

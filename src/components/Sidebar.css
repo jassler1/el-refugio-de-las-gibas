@@ -1,0 +1,28 @@
+/* App.css (Solo Sidebar) */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4A3E30;
+}
+
+.app-container-sidebar-only {
+  display: flex; /* Flexbox para colocar la barra lateral y el contenido uno al lado del otro */
+  min-height: 100vh;
+}
+
+.content-area {
+  flex-grow: 1; /* El contenido se expande para llenar el espacio restante */
+  padding: 2rem;
+  background-color: #f8f9fa;
+  overflow-y: auto;
+}

@@ -1,0 +1,97 @@
+/* VentasEsperadas.css */
+
+.expected-sales-container {
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 2rem auto;
+  font-family: Arial, sans-serif;
+  color: #343a40;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+.total-amount {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #007bff;
+  margin-top: 1rem;
+}
+
+.total-amount span {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+  color: #495057;
+}
+
+.separator {
+  border: none;
+  height: 1px;
+  background-color: #e9ecef;
+  margin: 2rem 0;
+}
+
+.details-section {
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.product-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-name {
+  font-weight: 500;
+  color: #495057;
+}
+
+.product-info {
+  font-size: 0.9rem;
+  color: #adb5bd;
+}
+
+.product-profit {
+  font-weight: bold;
+  color: #28a745;
+}

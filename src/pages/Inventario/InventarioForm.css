@@ -1,0 +1,242 @@
+/* --------------------------------------------- */
+/* 🎨 VARIABLES Y BASE DE ESTILO */
+/* --------------------------------------------- */
+:root {
+  --color-accent: #4CAF50;
+  --color-accent-dark: #388E3C;
+  --color-gray: #888;
+  --color-light: #f9f9f9;
+  --color-white: #fff;
+  --color-border: #ddd;
+  --color-text: #333;
+
+  --font-main: 'Segoe UI', 'Roboto', sans-serif;
+
+  --radius: 8px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --transition: 0.25s ease;
+}
+
+/* --------------------------------------------- */
+/* 📦 LAYOUT GENERAL */
+/* --------------------------------------------- */
+.form-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: var(--color-light);
+  min-height: 100vh;
+  font-family: var(--font-main);
+  color: var(--color-text);
+}
+
+.inventario-form {
+  background: var(--color-white);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* --------------------------------------------- */
+/* 📝 TITULOS Y SECCIONES */
+/* --------------------------------------------- */
+.inventario-form h3 {
+  text-align: center;
+  font-size: 1.6rem;
+  color: var(--color-accent);
+  margin-bottom: 1rem;
+}
+
+.section-separator {
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.4rem;
+  margin-top: 1rem;
+  color: var(--color-accent);
+  font-size: 1.1rem;
+}
+
+/* --------------------------------------------- */
+/* 📥 CAMPOS INPUT Y SELECT */
+/* --------------------------------------------- */
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: #fff;
+  font-size: 1rem;
+  transition: border-color var(--transition);
+}
+
+input:focus,
+select:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+/* Campos grandes (Nombre y Proveedor) */
+.input-xl {
+  padding: 1rem 1.2rem;
+  font-size: 1.1rem;
+}
+
+/* --------------------------------------------- */
+/* 📌 CAMPOS CON SÍMBOLOS (Bs., %) */
+/* --------------------------------------------- */
+.input-with-symbol {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-symbol input {
+  padding-right: 3rem;
+}
+
+.symbol-prefix,
+.symbol-suffix {
+  position: absolute;
+  right: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-gray);
+  pointer-events: none;
+}
+
+/* --------------------------------------------- */
+/* 📂 CATEGORÍAS Y GRUPOS */
+/* --------------------------------------------- */
+.category-control-group,
+.new-category-input-group,
+.form-row-group {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.category-control-group select,
+.new-category-input-group input {
+  flex: 1;
+}
+
+.form-row-group .half-input {
+  flex: 1;
+}
+
+/* --------------------------------------------- */
+/* 🟢 BOTONES SECUNDARIOS */
+/* --------------------------------------------- */
+.btn-delete-category,
+.btn-add-category {
+  border: none;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background var(--transition);
+}
+
+.btn-delete-category {
+  background: #f44336;
+  color: white;
+}
+
+.btn-delete-category:hover {
+  background: #d32f2f;
+}
+
+.btn-add-category {
+  background: var(--color-accent);
+  color: white;
+}
+
+.btn-add-category:hover {
+  background: var(--color-accent-dark);
+}
+
+/* --------------------------------------------- */
+/* ✅ CHECKBOX */
+/* --------------------------------------------- */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  color: var(--color-gray);
+  gap: 0.5rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent);
+}
+
+/* --------------------------------------------- */
+/* 🔘 BOTONES FINALES */
+/* --------------------------------------------- */
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #ccc;
+  color: #222;
+}
+
+.btn-secondary:hover {
+  background: #bbb;
+}
+
+/* --------------------------------------------- */
+/* 📱 RESPONSIVE */
+/* --------------------------------------------- */
+@media (max-width: 600px) {
+  .inventario-form {
+    padding: 1.5rem;
+  }
+
+  .form-row-group,
+  .category-control-group,
+  .new-category-input-group,
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}
