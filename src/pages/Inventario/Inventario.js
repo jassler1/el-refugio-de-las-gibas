@@ -3,7 +3,6 @@ import {
     collection,
     addDoc,
     query,
-    where,
     onSnapshot,
     doc,
     updateDoc,
@@ -26,6 +25,7 @@ const VIEWS = {
     VENTAS_ESPERADAS: 'ventasEsperadas',
     CREAR_KIT: 'crearKit',
     EDIT_INSUMO: 'editInsumo',
+    EDIT_KIT: 'editKit', // <<< NUEVA VISTA PARA EDICIÓN DE KIT
     PRODUCTOS_VENDIDOS: 'productosVendidos',
 };
 
@@ -82,7 +82,7 @@ const InsumoRow = React.memo(({ insumo, onEdit, onDelete }) => {
     );
 });
 
-function Inventario({ userId }) {
+function Inventario() {
     const [insumos, setInsumos] = useState([]);
     const [kits, setKits] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -90,21 +90,17 @@ function Inventario({ userId }) {
     const [currentView, setCurrentView] = useState(VIEWS.INVENTORY);
     const [filtroNombre, setFiltroNombre] = useState('');
     const [editingInsumo, setEditingInsumo] = useState(null);
+    const [editingKit, setEditingKit] = useState(null); // <<< NUEVO ESTADO PARA EL KIT A EDITAR
 
     // ====================================
     // 1. Efecto de Carga de Datos (Firebase)
     // ====================================
     useEffect(() => {
-        if (!userId) {
-            setLoading(false);
-            return;
-        }
-
         setLoading(true);
         setError(null);
 
         // Listener para Insumos
-        const insumosQuery = query(collection(db, 'insumos'), where('userId', '==', userId));
+        const insumosQuery = query(collection(db, 'insumos'));
         const unsubscribeInsumos = onSnapshot(
             insumosQuery,
             (querySnapshot) => {
@@ -121,7 +117,7 @@ function Inventario({ userId }) {
         );
 
         // Listener para Kits
-        const kitsQuery = query(collection(db, 'kits'), where('userId', '==', userId));
+        const kitsQuery = query(collection(db, 'kits'));
         const unsubscribeKits = onSnapshot(
             kitsQuery,
             (querySnapshot) => {
@@ -131,7 +127,6 @@ function Inventario({ userId }) {
             },
             (err) => {
                 console.error('Error in snapshot listener for kits:', err);
-                // No sobrescribe un error de insumos si ya existe
                 setError((prev) =>
                     prev ? prev : `Error al cargar los kits: ${err.message}. Revisa tus permisos de acceso.`
                 );
@@ -140,15 +135,14 @@ function Inventario({ userId }) {
 
         // Función de limpieza
         return () => {
-            // Se añaden bloques try-catch para un apagado seguro de listeners (aunque ya lo tenías)
             try {
                 unsubscribeInsumos && unsubscribeInsumos();
                 unsubscribeKits && unsubscribeKits();
             } catch (e) {
-                // Silenciar errores de desuscripción si la conexión ya está cerrada
+                // Silenciar errores de desuscripción
             }
         };
-    }, [userId]);
+    }, []);
 
     // ====================================
     // 2. Funciones de Lógica y Helpers
@@ -166,7 +160,6 @@ function Inventario({ userId }) {
         for (const comp of componentes) {
             const insumo = currentInsumos.find((i) => i.id === comp.insumoId);
             if (!insumo) {
-                // Si el insumo no existe, no se puede fabricar el kit
                 return { maxKitsPosibles: 0, insumoLimitante: `Insumo ID ${comp.insumoId} no encontrado` };
             }
 
@@ -239,11 +232,6 @@ function Inventario({ userId }) {
 
     // Handler para Agregar Insumo
     const handleAddInsumo = async (newInsumo) => {
-        if (!userId) {
-            alert('Usuario no autenticado. Por favor, inicia sesión.');
-            return;
-        }
-
         if (!newInsumo) return;
 
         if (newInsumo.id) {
@@ -261,7 +249,6 @@ function Inventario({ userId }) {
                 nombre,
                 categoria,
                 codigo: codigoGenerado,
-                userId,
                 cantidad: Number(newInsumo.cantidad ?? 0),
                 costoCompra:
                     newInsumo.costoCompra != null ? Number(newInsumo.costoCompra) : Number(0).toFixed(2),
@@ -313,7 +300,7 @@ function Inventario({ userId }) {
             if (dataToUpdate.costoVenta != null) dataToUpdate.costoVenta = Number(dataToUpdate.costoVenta);
             if (dataToUpdate.stockMinimo != null) dataToUpdate.stockMinimo = Number(dataToUpdate.stockMinimo);
             
-            // Convertir a mayúsculas si es necesario (el formulario podría no hacerlo)
+            // Convertir a mayúsculas si es necesario
             if (dataToUpdate.nombre != null) dataToUpdate.nombre = String(dataToUpdate.nombre).toUpperCase();
             if (dataToUpdate.categoria != null) dataToUpdate.categoria = String(dataToUpdate.categoria).toUpperCase();
 
@@ -328,12 +315,62 @@ function Inventario({ userId }) {
         }
     };
 
-    // Handler para Crear Kit
-    const handleCrearKit = async (kitData) => {
-        if (!userId) {
-            alert('Usuario no autenticado. Por favor, inicia sesión.');
-            return;
+    // Handler para Actualizar Kit (NUEVO)
+    const handleUpdateKit = async (updatedKit) => {
+        try {
+            if (!updatedKit?.id) {
+                throw new Error('ID de kit no válido para la actualización.');
+            }
+
+            const kitId = updatedKit.id;
+            const { id, ...dataToUpdate } = updatedKit;
+
+            // Recalcular el límite y los costos
+            const costoTotalCompra = Number(dataToUpdate.costoTotal ?? dataToUpdate.costoCompra ?? 0);
+            const precioVenta = Number(dataToUpdate.precioVenta ?? 0);
+            const ganancia = precioVenta - costoTotalCompra;
+            
+            const { maxKitsPosibles, insumoLimitante } = calculateKitLimits(
+                dataToUpdate.componentes ?? [],
+                insumos
+            );
+
+            // Preparar componentes para guardar
+            const componentesParaKit = (dataToUpdate.componentes ?? []).map((comp) => {
+                const insumo = insumos.find((i) => i.id === comp.insumoId);
+                return {
+                    insumoId: comp.insumoId,
+                    nombreInsumo: insumo?.nombre ?? 'Desconocido',
+                    cantidad: Number(comp.cantidadNecesaria ?? comp.cantidad ?? 0),
+                };
+            });
+            
+            // Preparar la data final para la actualización
+            const dataFinal = {
+                ...dataToUpdate,
+                nombre: String(dataToUpdate.nombre ?? '').toUpperCase(),
+                costoCompra: Number(costoTotalCompra.toFixed(2)),
+                precioVenta: Number(precioVenta.toFixed(2)),
+                ganancia: Number(ganancia.toFixed(2)),
+                componentes: componentesParaKit,
+                maxKitsPosibles,
+                insumoLimitante,
+            };
+
+            const kitRef = doc(db, 'kits', kitId);
+            await updateDoc(kitRef, dataFinal);
+
+            setCurrentView(VIEWS.INVENTORY);
+            setEditingKit(null);
+            alert('Kit actualizado exitosamente.');
+        } catch (error) {
+            console.error('Error al actualizar kit:', error);
+            alert('Error al actualizar kit: ' + (error?.message ?? String(error)));
         }
+    };
+
+    // Handler para Crear Kit (Original)
+    const handleCrearKit = async (kitData) => {
         try {
             const costoTotalCompra = Number(kitData.costoTotal ?? kitData.costoCompra ?? 0);
             const precioVenta = Number(kitData.precioVenta ?? 0);
@@ -360,7 +397,6 @@ function Inventario({ userId }) {
                 precioVenta: Number(precioVenta.toFixed(2)),
                 ganancia: Number(ganancia.toFixed(2)),
                 componentes: componentesParaKit,
-                userId,
                 creadoEn: new Date(),
                 maxKitsPosibles,
                 insumoLimitante,
@@ -416,10 +452,19 @@ function Inventario({ userId }) {
         [insumos]
     );
 
-    // Handler para Editar Kit (no implementado, solo alerta)
-    const handleEditKit = useCallback((kitId) => {
-        alert(`Función de edición para el kit con ID: ${kitId} no implementada.`);
-    }, []);
+    // Handler para Editar Kit (Implementado)
+    const handleEditKit = useCallback(
+        (kitId) => {
+            const kitToEdit = kits.find((kit) => kit.id === kitId);
+            if (kitToEdit) {
+                setEditingKit(kitToEdit);
+                setCurrentView(VIEWS.EDIT_KIT); // <<< CAMBIO DE VISTA
+            } else {
+                alert('Kit no encontrado para editar.');
+            }
+        },
+        [kits]
+    );
 
     // ====================================
     // 4. Renderizado Condicional
@@ -430,14 +475,12 @@ function Inventario({ userId }) {
             case VIEWS.ADD_INSUMO:
                 return (
                     <div className="form-modal-overlay">
-                        {/* Se usa onSave para agregar un nuevo insumo */}
                         <InventarioForm onSave={handleAddInsumo} onCancel={() => setCurrentView(VIEWS.INVENTORY)} insumos={insumos} />
                     </div>
                 );
             case VIEWS.EDIT_INSUMO:
                 return (
                     <div className="form-modal-overlay">
-                        {/* Se usa onSave para actualizar el insumo existente */}
                         <InventarioForm
                             initialData={editingInsumo}
                             onSave={handleUpdateInsumo}
@@ -469,14 +512,29 @@ function Inventario({ userId }) {
                     <div className="form-modal-overlay">
                         <CrearKitForm
                             insumos={insumos}
-                            onCrearKit={handleCrearKit}
+                            onCrearKit={handleCrearKit} // Crear
                             onCancel={() => setCurrentView(VIEWS.INVENTORY)}
                             calculateLimits={calculateKitLimits}
                         />
                     </div>
                 );
+            case VIEWS.EDIT_KIT: // <<< CASO DE EDICIÓN DE KIT
+                return (
+                    <div className="form-modal-overlay">
+                        <CrearKitForm
+                            insumos={insumos}
+                            initialData={editingKit} // Pasa los datos del kit
+                            onCrearKit={handleUpdateKit} // Usa el handler de actualización
+                            onCancel={() => {
+                                setCurrentView(VIEWS.INVENTORY);
+                                setEditingKit(null);
+                            }}
+                            calculateLimits={calculateKitLimits}
+                        />
+                    </div>
+                );
             case VIEWS.PRODUCTOS_VENDIDOS:
-                return <ProductosMasVendidos userId={userId} onCancel={() => setCurrentView(VIEWS.INVENTORY)} />;
+                return <ProductosMasVendidos onCancel={() => setCurrentView(VIEWS.INVENTORY)} />;
             case VIEWS.INVENTORY:
             default:
                 return (

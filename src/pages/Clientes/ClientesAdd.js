@@ -16,11 +16,10 @@ const generateClientCode = () => {
  * Componente para agregar un nuevo cliente a la base de datos.
  *
  * @param {object} props - Propiedades del componente.
- * @param {string} props.userId - El ID del usuario actual para asociar el cliente.
  * @param {function} props.onClienteAdded - Función de callback para volver a la lista después de agregar un cliente.
  * @param {function} props.onCancel - Función de callback para cancelar la adición y volver a la lista.
  */
-function ClientesAdd({ userId, onClienteAdded, onCancel }) {
+function ClientesAdd({ onClienteAdded, onCancel }) {
   const [newCliente, setNewCliente] = useState({
     nombreCompleto: '',
     ci: '',
@@ -39,21 +38,18 @@ function ClientesAdd({ userId, onClienteAdded, onCancel }) {
   };
 
   const validateForm = () => {
-    // 1. Validar nombreCompleto: solo letras y espacios, todo en mayúsculas
     const nameRegex = /^[A-Z\s]+$/;
     if (!newCliente.nombreCompleto || !nameRegex.test(newCliente.nombreCompleto)) {
       alert('El Nombre Completo es obligatorio y debe contener solo letras y espacios.');
       return false;
     }
 
-    // 2. Validar CI: solo números
     const ciRegex = /^\d+$/;
     if (!newCliente.ci || !ciRegex.test(newCliente.ci)) {
       alert('El Número de CI es obligatorio y debe contener solo números.');
       return false;
     }
 
-    // 3. Validar Teléfono: solo números
     const phoneRegex = /^\d+$/;
     if (!newCliente.telefono || !phoneRegex.test(newCliente.telefono)) {
       alert('El Teléfono es obligatorio y debe contener solo números.');
@@ -66,23 +62,16 @@ function ClientesAdd({ userId, onClienteAdded, onCancel }) {
   const handleAddCliente = async (e) => {
     e.preventDefault();
 
-    // Validar el formulario antes de enviar
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
-      if (!userId) {
-        throw new Error('Usuario no autenticado. Por favor, inicia sesión.');
-      }
-
       await addDoc(collection(db, 'clientes'), {
         ...newCliente,
-        userId,
         creadoEn: new Date(),
       });
 
       alert('Cliente creado exitosamente.');
+
       setNewCliente({
         nombreCompleto: '',
         ci: '',

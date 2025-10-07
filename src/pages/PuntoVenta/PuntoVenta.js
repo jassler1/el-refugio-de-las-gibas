@@ -13,7 +13,7 @@ import { db } from '../../firebase'; // Ajusta ruta según tu proyecto
 import './PuntoVentaUnificado.css';
 import PaymentModal from './PaymentModal';
 
-function PuntoVenta({ userId }) {
+function PuntoVenta() {
     const [clientes, setClientes] = useState([]);
     const [productos, setProductos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -29,14 +29,13 @@ function PuntoVenta({ userId }) {
 
     // Guarda la comanda pendiente para una mesa
     const saveComanda = async (mesaId, comandaData) => {
-        if (!userId || !mesaId) return;
+        if (!mesaId) return;
         try {
             const comandaRef = doc(db, 'comandosPendientes', mesaId); 
             await setDoc(
                 comandaRef,
                 {
                     ...comandaData,
-                    userId: userId, 
                     mesaId: mesaId,
                 },
                 { merge: true }
@@ -63,12 +62,6 @@ function PuntoVenta({ userId }) {
     };
 
     useEffect(() => {
-        if (!userId) {
-            setLoading(false);
-            setError('No hay usuario autenticado. Asegúrate de que las Reglas de Firestore lo permitan.');
-            return;
-        }
-
         const clientesQuery = collection(db, 'clientes');
         const insumosQuery = collection(db, 'insumos');
         const kitsQuery = collection(db, 'kits');
@@ -137,7 +130,7 @@ function PuntoVenta({ userId }) {
             unsubscribeInsumos();
             unsubscribeKits();
         };
-    }, [userId]);
+    }, []);
 
     const handleAddMesa = () => {
         setMesasActivas((prev) => [...prev, `Mesa ${nextMesaNumber}`]);
@@ -189,9 +182,7 @@ function PuntoVenta({ userId }) {
         });
     };
     
-    // =======================================================
-    // === FIX DE SCOPE: FUNCIONES DE MANEJO DE CARRITO ===
-    // =======================================================
+    // Manejo carrito
 
     const handleEliminarDelCarrito = (productoId) => {
         setCarrito((prev) => prev.filter((item) => item.id !== productoId));
@@ -226,7 +217,6 @@ function PuntoVenta({ userId }) {
                 .filter((item) => item.cantidad > 0);
         });
     };
-    // =======================================================
 
     const calcularTotal = () => {
         const subtotal = carrito.reduce((sum, item) => {
@@ -245,10 +235,6 @@ function PuntoVenta({ userId }) {
     const handlePagar = async (metodoDePago, pagos) => {
         if (!selectedMesa || carrito.length === 0) {
             alert("El carrito está vacío o no hay mesa seleccionada.");
-            return;
-        }
-        if (!userId) {
-            alert("Error: Usuario no autenticado.");
             return;
         }
 
@@ -278,7 +264,6 @@ function PuntoVenta({ userId }) {
                 // Crear la venta
                 const ventaRef = doc(collection(db, 'ventas'));
                 transaction.set(ventaRef, {
-                    userId,
                     mesaId: selectedMesa,
                     clienteId: selectedCliente?.id || null,
                     total: parseFloat(calcularTotal()),

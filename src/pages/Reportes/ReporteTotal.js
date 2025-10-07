@@ -1,178 +1,283 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  onSnapshot,
+  orderBy,
+  where,
+  Timestamp
+} from 'firebase/firestore';
 import { db } from '../../firebase';
 import './ReporteTotal.css';
 
-function ReporteTotal({ userId }) {
+function ReporteTotal() {
   const [ingresosTotales, setIngresosTotales] = useState(0);
   const [egresosTotales, setEgresosTotales] = useState(0);
+  const [gastosDiariosTotales, setGastosDiariosTotales] = useState(0);
+
   const [ventasList, setVentasList] = useState([]);
-  const [egresosList, setEgresosList] = useState([]); // Nuevo estado para la lista de egresos
+  const [egresosList, setEgresosList] = useState([]);
+  const [gastosDiariosList, setGastosDiariosList] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [fechaDesde, setFechaDesde] = useState('');
+  const [fechaHasta, setFechaHasta] = useState('');
+
+  // 💰 Formateador de moneda en Bolivianos
+  const formatBs = (valor) => {
+    return new Intl.NumberFormat('es-BO', {
+      style: 'currency',
+      currency: 'BOB',
+      minimumFractionDigits: 2
+    }).format(valor || 0);
+  };
+
   useEffect(() => {
-    if (!userId) {
-      setError('No hay usuario autenticado.');
-      setLoading(false);
-      return;
-    }
+    setLoading(true);
+    setError(null);
 
-    // Consulta para los egresos
-    const qEgresos = query(collection(db, 'egresos'), where('userId', '==', userId), orderBy('timestamp', 'desc'));
+    const desdeTimestamp = fechaDesde ? Timestamp.fromDate(new Date(fechaDesde)) : null;
+    const hastaTimestamp = fechaHasta
+      ? Timestamp.fromDate(new Date(new Date(fechaHasta).setHours(23, 59, 59, 999)))
+      : null;
 
-    // Consulta para las ventas (ingresos)
-    const qVentas = query(
-      collection(db, 'ventas'),
-      where('userId', '==', userId),
-      orderBy('timestamp', 'desc')
+    const buildQuery = (coleccion) => {
+      let q = collection(db, coleccion);
+
+      if (desdeTimestamp && hastaTimestamp) {
+        q = query(
+          q,
+          where('timestamp', '>=', desdeTimestamp),
+          where('timestamp', '<=', hastaTimestamp),
+          orderBy('timestamp', 'asc')
+        );
+      } else if (desdeTimestamp) {
+        q = query(q, where('timestamp', '>=', desdeTimestamp), orderBy('timestamp', 'asc'));
+      } else if (hastaTimestamp) {
+        q = query(q, where('timestamp', '<=', hastaTimestamp), orderBy('timestamp', 'asc'));
+      } else {
+        q = query(q, orderBy('timestamp', 'desc'));
+      }
+
+      return q;
+    };
+
+    const handleSnapshot = (querySnapshot, setList, setTotal) => {
+      let total = 0;
+      const data = querySnapshot.docs.map((doc) => {
+        const d = doc.data();
+        total += d.total || 0;
+        return {
+          id: doc.id,
+          ...d,
+          fecha: d.timestamp?.toDate().toLocaleDateString(),
+          hora: d.timestamp?.toDate().toLocaleTimeString()
+        };
+      });
+      if (fechaDesde || fechaHasta) {
+        data.reverse();
+      }
+      setTotal(total);
+      setList(data);
+    };
+
+    const unsubscribeEgresos = onSnapshot(
+      buildQuery('egresos'),
+      (snapshot) => {
+        handleSnapshot(snapshot, setEgresosList, setEgresosTotales);
+        setLoading(false);
+      },
+      (err) => {
+        setError('Error al cargar los egresos: ' + err.message);
+        setLoading(false);
+      }
     );
 
-    // Suscripción a la colección de Egresos
-    const unsubscribeEgresos = onSnapshot(qEgresos, (querySnapshot) => {
-      let total = 0;
-      const egresosData = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        total += data.total || 0;
-        return {
-          id: doc.id,
-          ...data,
-          fecha: data.timestamp?.toDate().toLocaleDateString(),
-          hora: data.timestamp?.toDate().toLocaleTimeString(),
-        };
-      });
-      setEgresosTotales(total);
-      setEgresosList(egresosData); // Se guarda la lista de egresos
-      setLoading(false);
-    }, (err) => {
-      console.error("Error al cargar los egresos:", err);
-      setError('Error al cargar los egresos: ' + err.message);
-      setLoading(false);
-    });
+    const unsubscribeVentas = onSnapshot(
+      buildQuery('ventas'),
+      (snapshot) => {
+        handleSnapshot(snapshot, setVentasList, setIngresosTotales);
+        setLoading(false);
+      },
+      (err) => {
+        setError('Error al cargar las ventas: ' + err.message);
+        setLoading(false);
+      }
+    );
 
-    // Suscripción a la colección de Ventas (Ingresos)
-    const unsubscribeVentas = onSnapshot(qVentas, (querySnapshot) => {
-      let totalVentas = 0;
-      const ventasData = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        totalVentas += data.total || 0;
-        return {
-          id: doc.id,
-          ...data,
-          fecha: data.timestamp?.toDate().toLocaleDateString(),
-          hora: data.timestamp?.toDate().toLocaleTimeString(),
-        };
-      });
-      setIngresosTotales(totalVentas);
-      setVentasList(ventasData);
-      setLoading(false);
-    }, (err) => {
-      console.error("Error al cargar las ventas:", err);
-      setError('Error al cargar las ventas: ' + err.message);
-      setLoading(false);
-    });
+    const unsubscribeGastosDiarios = onSnapshot(
+      buildQuery('gastos_diarios'),
+      (snapshot) => {
+        handleSnapshot(snapshot, setGastosDiariosList, setGastosDiariosTotales);
+        setLoading(false);
+      },
+      (err) => {
+        setError('Error al cargar los gastos diarios: ' + err.message);
+        setLoading(false);
+      }
+    );
 
     return () => {
       unsubscribeEgresos();
       unsubscribeVentas();
+      unsubscribeGastosDiarios();
     };
-  }, [userId]);
+  }, [fechaDesde, fechaHasta]);
 
-  const saldoTotal = ingresosTotales - egresosTotales;
-
-  if (loading) {
-    return <div className="loading-message">Cargando reporte...</div>;
-  }
-
-  if (error) {
-    return <div className="error-message">{error}</div>;
-  }
+  const inversionTotal = egresosTotales + gastosDiariosTotales;
+  const gananciasBrutas = ingresosTotales - inversionTotal;
+  const perdidas = gananciasBrutas < 0 ? Math.abs(gananciasBrutas) : 0;
+  const saldoNeto = gananciasBrutas;
 
   return (
     <div className="reporte-total-container">
-      <h3>Reporte Total</h3>
-      <div className="reporte-resumen">
-        <div className="resumen-card ingresos-card">
-          <h4>Total Ingresos</h4>
-          <p className="valor ingresos-valor">Bs. {ingresosTotales.toFixed(2)}</p>
-        </div>
-        <div className="resumen-card egresos-card">
-          <h4>Total Egresos</h4>
-          <p className="valor egresos-valor">Bs. {egresosTotales.toFixed(2)}</p>
-        </div>
-        <div className="resumen-card saldo-card">
-          <h4>Saldo Actual</h4>
-          <p className={`valor saldo-valor ${saldoTotal >= 0 ? 'saldo-positivo' : 'saldo-negativo'}`}>
-            Bs. {saldoTotal.toFixed(2)}
-          </p>
-        </div>
+      <h3>Reporte Total de Ingresos y Egresos en Bolivianos (Bs)</h3>
+
+      <div className="filtros-fecha">
+        <label>
+          Desde:{' '}
+          <input type="date" value={fechaDesde} onChange={(e) => setFechaDesde(e.target.value)} />
+        </label>
+        <label>
+          Hasta:{' '}
+          <input type="date" value={fechaHasta} onChange={(e) => setFechaHasta(e.target.value)} />
+        </label>
       </div>
 
-      <hr className="divider" />
+      {loading && <div className="loading-message">Cargando reporte...</div>}
+      {error && <div className="error-message">{error}</div>}
 
-      <div className="lista-ventas-section">
-        <h3>Detalle de Ventas</h3>
-        {ventasList.length === 0 ? (
-          <div className="no-data-message">
-            No se encontraron ventas registradas.
+      {!loading && !error && (
+        <>
+          <div className="reporte-resumen">
+            <div className="resumen-card">
+              <h4>Ventas Totales</h4>
+              <p className="valor ingresos-valor">{formatBs(ingresosTotales)}</p>
+            </div>
+
+            <div className="resumen-card">
+              <h4>Egresos Totales</h4>
+              <p className="valor egresos-valor">{formatBs(egresosTotales)}</p>
+            </div>
+
+            <div className="resumen-card">
+              <h4>Gastos Diarios Totales</h4>
+              <p className="valor gastos-valor">{formatBs(gastosDiariosTotales)}</p>
+            </div>
+
+            <div className="resumen-card">
+              <h4>Inversión Total (Egresos + Gastos)</h4>
+              <p className="valor inversion-valor">{formatBs(inversionTotal)}</p>
+            </div>
+
+            <div className="resumen-card">
+              <h4>Ganancias Brutas</h4>
+              <p
+                className={`valor ganancias-valor ${
+                  gananciasBrutas >= 0 ? 'positivo' : 'negativo'
+                }`}
+              >
+                {formatBs(gananciasBrutas)}
+              </p>
+            </div>
+
+            <div className="resumen-card">
+              <h4>Pérdidas</h4>
+              <p className="valor perdidas-valor">{formatBs(perdidas)}</p>
+            </div>
+
+            <div className="resumen-card">
+              <h4>Saldo Neto</h4>
+              <p className={`valor neto-valor ${saldoNeto >= 0 ? 'positivo' : 'negativo'}`}>
+                {formatBs(saldoNeto)}
+              </p>
+            </div>
           </div>
-        ) : (
-          <ul className="lista-ventas">
-            {ventasList.map((venta) => (
-              <li key={venta.id} className="venta-item">
-                <div className="venta-header">
-                  <span className="venta-info">
-                    <strong>Fecha:</strong> {venta.fecha} a las {venta.hora}
-                  </span>
-                  <span className="venta-total">
-                    Total: <strong>Bs. {venta.total?.toFixed(2) || '0.00'}</strong>
-                  </span>
-                </div>
-                <ul className="articulos-vendidos">
-                  {venta.articulos.map((articulo, index) => (
-                    <li key={index} className="articulo-item">
-                      <span>{articulo.cantidad} x {articulo.descripcion}</span>
-                      <span className="articulo-precios">
-                        Bs. {articulo.precioUnitario?.toFixed(2) || '0.00'} c/u - Subtotal: Bs. {(articulo.cantidad * articulo.precioUnitario)?.toFixed(2) || '0.00'}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
 
-      <hr className="divider" />
-      
-      {/* Sección para la lista detallada de Egresos */}
-      <div className="lista-egresos-section">
-        <h3>Detalle de Egresos</h3>
-        {egresosList.length === 0 ? (
-          <div className="no-data-message">
-            No se encontraron egresos registrados.
-          </div>
-        ) : (
-          <ul className="lista-egresos">
-            {egresosList.map((egreso) => (
-              <li key={egreso.id} className="egreso-item">
-                <div className="egreso-header">
-                  <span className="egreso-info">
-                    <strong>Fecha:</strong> {egreso.fecha} a las {egreso.hora}
-                  </span>
-                  <span className="egreso-total">
-                    Total: <strong>Bs. {egreso.total?.toFixed(2) || '0.00'}</strong>
-                  </span>
-                </div>
-                <p className="egreso-descripcion">
-                  Descripción: {egreso.descripcion}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+          {/* Lista de ingresos */}
+          <section className="lista-ventas-section">
+            <h3>Ingresos (Ventas)</h3>
+            {ventasList.length === 0 ? (
+              <p className="no-data-message">No hay ingresos en este rango de fechas.</p>
+            ) : (
+              <ul className="lista-ventas">
+                {ventasList.map((venta) => (
+                  <li key={venta.id} className="venta-item">
+                    <div className="venta-header">
+                      <div className="venta-info">
+                        <strong>Fecha:</strong> {venta.fecha} <br />
+                        <strong>Hora:</strong> {venta.hora}
+                      </div>
+                      <div className="venta-total">{formatBs(venta.total)}</div>
+                    </div>
+                    {venta.articulos && (
+                      <ul className="articulos-vendidos">
+                        {venta.articulos.map((art, idx) => (
+                          <li key={idx} className="articulo-item">
+                            <span>{art.nombre || art.descripcion || 'Artículo'}</span>
+                            <span className="articulo-precios">
+                              {art.cantidad ? `${art.cantidad}x ` : ''}
+                              {formatBs(art.precio)}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          {/* Lista de egresos */}
+          <section className="lista-egresos-section">
+            <h3>Egresos</h3>
+            {egresosList.length === 0 ? (
+              <p className="no-data-message">No hay egresos en este rango de fechas.</p>
+            ) : (
+              <ul className="lista-egresos">
+                {egresosList.map((egreso) => (
+                  <li key={egreso.id} className="egreso-item">
+                    <div className="egreso-header">
+                      <div className="egreso-info">
+                        <strong>Fecha:</strong> {egreso.fecha} <br />
+                        <strong>Hora:</strong> {egreso.hora}
+                      </div>
+                      <div className="egreso-total">{formatBs(egreso.total)}</div>
+                    </div>
+                    <p className="egreso-descripcion">{egreso.descripcion || 'Sin descripción'}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          {/* Lista de gastos diarios */}
+          <section className="lista-gastos-section">
+            <h3>Gastos Diarios</h3>
+            {gastosDiariosList.length === 0 ? (
+              <p className="no-data-message">No hay gastos diarios en este rango de fechas.</p>
+            ) : (
+              <ul className="lista-gastos">
+                {gastosDiariosList.map((gasto) => (
+                  <li key={gasto.id} className="gasto-item">
+                    <div className="gasto-header">
+                      <div className="gasto-info">
+                        <strong>Fecha:</strong> {gasto.fecha} <br />
+                        <strong>Hora:</strong> {gasto.hora}
+                      </div>
+                      <div className="gasto-total">{formatBs(gasto.total)}</div>
+                    </div>
+                    <p className="gasto-descripcion">{gasto.descripcion || 'Sin descripción'}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </>
+      )}
     </div>
   );
 }
